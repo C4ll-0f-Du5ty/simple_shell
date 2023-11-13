@@ -1,34 +1,96 @@
 #include "shell.h"
 
-void executeCommand(command x, char *arguments[])
-{
-    pid_t pid = fork();
-    int i;
+// void executeCommand(command x, char *arguments[])
+// {
+//     pid_t pid = fork();
+//     int i;
 
-    if (pid == -1)
+//     if (pid == -1)
+//     {
+//         perror("fork");
+//         exit(EXIT_FAILURE);
+//     }
+
+//     if (pid == 0)
+//     {
+//         // char **arguments = malloc(sizeof(char *) * (sizeof(x.arguments) + 2));
+//         // if (arguments == NULL)
+//         // {
+//         //     perror("malloc");
+//         //     exit(EXIT_FAILURE);
+//         // }
+//         // arguments[0] = x.path;
+//         // for (i = 0; arguments[i]; i++)
+//         // {
+//         //     arguments[i + 1] = x.arguments[i];
+//         // }
+//         // arguments[1 + sizeof(x.arguments) / sizeof(char *)] = NULL;
+//         if (execve(x.path, arguments, NULL) == -1)
+//         {
+//             perror("execve");
+//             exit(EXIT_FAILURE);
+//         }
+//     }
+//     else
+//     {
+//         int status;
+//         wait(&status);
+//     }
+// }
+
+void concatenate(char *dest, char *src1, char *src2, size_t destSize)
+{
+    _strncpy(dest, src1, destSize);
+    _strncat(dest, "/", destSize - strlen(dest));
+    _strncat(dest, src2, destSize - strlen(dest));
+}
+
+void executeCommand(char *command, char *paths[], int counter, char *argv[])
+{
+    pid_t child = fork();
+    // char *args[MAX_ARGS];
+    size_t length = _strlen(command) + 1;
+    char **args = malloc(sizeof(char) * length);
+    int i = 0;
+
+    if (child == -1)
     {
         perror("fork");
         exit(EXIT_FAILURE);
     }
 
-    if (pid == 0)
+    parseArguments(command, args, length);
+    if (child == 0)
     {
-        // char **arguments = malloc(sizeof(char *) * (sizeof(x.arguments) + 2));
-        // if (arguments == NULL)
+
+        // if (args[0] == NULL)
         // {
-        //     perror("malloc");
+        //     printf("Invalid command\n");
         //     exit(EXIT_FAILURE);
         // }
-        // arguments[0] = x.path;
-        // for (i = 0; arguments[i]; i++)
-        // {
-        //     arguments[i + 1] = x.arguments[i];
-        // }
-        // arguments[1 + sizeof(x.arguments) / sizeof(char *)] = NULL;
-        if (execve(x.path, arguments, NULL) == -1)
+
+        if (strchr(args[0], '/') != NULL)
         {
-            perror("execve");
-            exit(EXIT_FAILURE);
+            execve(args[0], args, NULL);
+        }
+        else
+        {
+            char fullPath[MAX_ARGS];
+            for (i = 0; paths[i] != NULL; i++)
+            {
+                concatenate(fullPath, paths[i], args[0], MAX_ARGS);
+
+                if (access(fullPath, X_OK) != -1)
+                {
+                    execve(fullPath, args, NULL);
+                    break;
+                }
+            }
+            if (paths[i] == NULL)
+            {
+                printf("%s: %d: %s: not found\n", argv[0], counter, args[0]);
+                exit(EXIT_FAILURE);
+            }
         }
     }
     else
@@ -36,22 +98,23 @@ void executeCommand(command x, char *arguments[])
         int status;
         wait(&status);
     }
+    free(args);
 }
 
-int specifier1(char *c, command specifier[], size_t size)
-{
-    int i;
+// int specifier1(char *c, command specifier[], size_t size)
+// {
+//     int i;
 
-    for (i = 0; i < size; i++)
-    {
-        if (_strcmp(c, specifier[i].name) == 0 || _strcmp(c, specifier[i].path) == 0)
-        {
-            return (i);
-        }
-    }
+//     for (i = 0; i < size; i++)
+//     {
+//         if (_strcmp(c, specifier[i].name) == 0 || _strcmp(c, specifier[i].path) == 0)
+//         {
+//             return (i);
+//         }
+//     }
 
-    return (-1);
-}
+//     return (-1);
+// }
 
 // int parseArguments(char *input, char *arguments[], int maxArguments)
 // {
@@ -203,4 +266,3 @@ void parseArguments(char *input, char *arguments[], int maxArguments)
 
 //     arguments[argCount] = NULL; // Set the last argument to NULL
 // }
-
