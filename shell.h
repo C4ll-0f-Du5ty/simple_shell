@@ -16,20 +16,20 @@
 #include <signal.h>
 #include <stdbool.h>
 
-// extern char **environ;
 #define MAX_ARGS 1024
+
+/**
+ * struct FormatHandler - Struct for handling format specifiers
+ * @name: The format specifier
+ * @functions: Pointer to the corresponding handler function
+ *
+ */
 
 typedef struct formatHandler
 {
     char *name;
     void (*functions)(char *);
 } formatHandler;
-
-typedef struct command
-{
-    char *name;
-    char *path;
-} command;
 
 void concatenate(char *dest, char *src1, char *src2, size_t destSize);
 void executeCommand(char *command, char *paths[], int counter, char *argv[]);
@@ -39,7 +39,6 @@ int _strlen(char *s);
 int _str1_len(char *s, char deli);
 void trimLeadingSpaces(char *str);
 void shiftString(char *str, int startIndex);
-// int specifier1(char *c, command specifier[], size_t size);
 void parseArguments(char *input, char *arguments[], int maxArguments);
 void handler(char *str);
 void _clear(char *str);
@@ -47,14 +46,10 @@ void leave(char *str);
 void _env(char *envp[]);
 void getPathTokens(char *paths[], char *envp[]);
 int _strncmp(char *s1, char *s2, int n);
-int checkCommandExists(const char *commandName, char *possiblePaths[], int numPaths);
 char *_strchr(const char *str, int character);
 void _strncat(char *dest, char *src, size_t n);
-int isInteractive();
+int isInteractive(void);
 void interactiveMode(char *possiblePaths[], char *envp[], char *argv[]);
 void nonInteractiveMode(char *possiblePaths[], char *envp[], char *argv[]);
-
-// void _putchar(char *str);
-// void _puts(char *str);
 
 #endif
