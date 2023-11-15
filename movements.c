@@ -11,8 +11,9 @@
 char *_getenv(char *n)
 {
 	char *env_var;
+	int i;
 
-	for (int i = 0; environ[i] != NULL; i++)
+	for (i = 0; environ[i] != NULL; i++)
 	{
 		env_var = environ[i];
 		if (_strncmp(env_var, n, _strlen(n)) == 0 && env_var[_strlen(n)] == '=')
