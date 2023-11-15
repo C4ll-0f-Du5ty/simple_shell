@@ -51,5 +51,6 @@ void _strncat(char *dest, char *src, size_t n);
 int isInteractive(void);
 void interactiveMode(char *possiblePaths[], char *envp[], char *argv[]);
 void nonInteractiveMode(char *possiblePaths[], char *envp[], char *argv[]);
+void executePath(char *paths[], char **args, char *argv[], int counter);
 
 #endif

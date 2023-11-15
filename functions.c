@@ -34,8 +34,6 @@ void executeCommand(char *command, char *paths[], int counter, char *argv[])
 	pid_t child = fork();
 	size_t length = _strlen(command) + 1;
 	char **args = malloc(sizeof(char *) * length);
-	int i = 0;
-	char fullPath[MAX_ARGS];
 
 	if (child == -1)
 	{
@@ -47,29 +45,7 @@ void executeCommand(char *command, char *paths[], int counter, char *argv[])
 	parseArguments(command, args, length);
 	if (child == 0)
 	{
-		if (strchr(args[0], '/') != NULL)
-		{
-			execve(args[0], args, NULL);
-			free(args);
-		}
-		else
-		{
-			for (i = 0; paths[i] != NULL; i++)
-			{
-				concatenate(fullPath, paths[i], args[0], MAX_ARGS);
-				if (access(fullPath, X_OK) != -1)
-				{
-					execve(fullPath, args, NULL);
-					break;
-				}
-			}
-			if (paths[i] == NULL)
-			{
-				printf("%s: %d: %s: not found\n", argv[0], counter, args[0]);
-				free(args);
-				exit(EXIT_FAILURE);
-			}
-		}
+		executePath(paths, args, argv, counter);
 	}
 	else
 	{
@@ -78,6 +54,47 @@ void executeCommand(char *command, char *paths[], int counter, char *argv[])
 		wait(&status);
 	}
 	free(args);
+}
+
+/**
+ * executePath - A function that executes the commands with checks
+ *
+ * @args: the input command seperated
+ * @paths: the paths where we will look into it.
+ * @counter: number of commands
+ * @argv: my program file name
+ *
+ * Return: no reutrn
+ */
+
+void executePath(char *paths[], char **args, char *argv[], int counter)
+{
+	char fullPath[MAX_ARGS];
+	int i = 0;
+
+	if (_strchr(args[0], '/') != NULL)
+	{
+		execve(args[0], args, NULL);
+		free(args);
+	}
+	else
+	{
+		for (i = 0; paths[i] != NULL; i++)
+		{
+			concatenate(fullPath, paths[i], args[0], MAX_ARGS);
+			if (access(fullPath, X_OK) != -1)
+			{
+				execve(fullPath, args, NULL);
+				break;
+			}
+		}
+		if (paths[i] == NULL)
+		{
+			printf("%s: %d: %s: not found\n", argv[0], counter, args[0]);
+			free(args);
+			exit(EXIT_FAILURE);
+		}
+	}
 }
 
 /**
