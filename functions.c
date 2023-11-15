@@ -103,7 +103,7 @@ void executePath(char *paths[], char **args, char *argv[], int counter)
 			if (access(fullPath, X_OK) != -1)
 			{
 				execve(fullPath, args, NULL);
-
+				free(args);
 				break;
 			}
 		}
@@ -114,6 +114,7 @@ void executePath(char *paths[], char **args, char *argv[], int counter)
 			exit(EXIT_FAILURE);
 		}
 	}
+	free(args);
 }
 
 /**

@@ -1,6 +1,28 @@
 #include "shell.h"
 
 /**
+ * _getenv - A function that executes the commands with checks
+ *
+ * @n: the input string to search for
+ *
+ * Return: no reutrn
+ */
+
+char *_getenv(char *n)
+{
+	char *env_var;
+
+	for (int i = 0; environ[i] != NULL; i++)
+	{
+		env_var = environ[i];
+		if (_strncmp(env_var, n, _strlen(n)) == 0 && env_var[_strlen(n)] == '=')
+		{
+			return (env_var + strlen(n) + 1);
+		}
+	}
+	return (NULL);
+}
+/**
  * changeDirectory - A function that executes the commands with checks
  *
  * @args: the input directory
@@ -12,7 +34,10 @@ void changeDirectory(char *args[])
 {
 	if (args[1] == NULL)
 	{
-		fprintf(stderr, "cd: missing argument\n");
+		if (chdir(getenv("HOME")) != 0)
+		{
+			perror("cd");
+		}
 	}
 	else
 	{

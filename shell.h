@@ -17,6 +17,7 @@
 #include <stdbool.h>
 
 #define MAX_ARGS 1024
+extern char **environ;
 
 /**
  * struct formatHandler - Struct for handling format specifiers
@@ -53,5 +54,7 @@ void nonInteractiveMode(char *possiblePaths[], char *envp[], char *argv[]);
 void executePath(char *paths[], char **args, char *argv[], int counter);
 int _atoi(char *str);
 void changeDirectory(char *args[]);
+char *_getenv(char *name);
+void freememmory(char *possiblePaths[]);
 
 #endif
