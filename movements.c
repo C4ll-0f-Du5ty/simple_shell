@@ -23,35 +23,46 @@ char *_getenv(char *n)
 	}
 	return (NULL);
 }
-/**
- * changeDirectory - A function that executes the commands with checks
- *
- * @args: the input directory
- *
- * Return: no reutrn
- */
 
-void changeDirectory(char *args[])
+/**
+ * changeDirectory - Change the current working directory.
+ * @args: An array containing the command and directory argument.
+ * @counter: number of commands
+ * @argv: my program file name
+ * Return: No return value.
+ */
+void changeDirectory(char *args[], char *argv[], int counter)
 {
-	if (args[1] == NULL)
+	char *targetDir = args[1];
+	char *oldPwd;
+	char cwd[MAX_ARGS];
+
+	if (targetDir == NULL || _strcmp(targetDir, "~") == 0)
 	{
-		if (chdir(getenv("HOME")) != 0)
-		{
-			perror("cd");
-		}
+		targetDir = _getenv("HOME");
+	}
+	else if (_strcmp(targetDir, "-") == 0)
+	{
+		targetDir = _getenv("OLDPWD");
+	}
+
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
+	{
+		perror("getcwd");
+		return;
+	}
+
+	if (chdir(targetDir) != 0 && targetDir != NULL)
+	{
+		fprintf(stderr, "%s: %d: cd: can't cd to %s\n", argv[0], counter, targetDir);
 	}
 	else
 	{
-		if (access(args[1], F_OK) != 0)
+		oldPwd = _getenv("PWD");
+		if (oldPwd != NULL)
 		{
-			fprintf(stderr, "-bash: cd: %s: No such file or directory\n", args[1]);
+			setenv("OLDPWD", oldPwd, 1);
 		}
-		else
-		{
-			if (chdir(args[1]) != 0)
-			{
-				perror("cd");
-			}
-		}
+		setenv("PWD", cwd, 1);
 	}
 }

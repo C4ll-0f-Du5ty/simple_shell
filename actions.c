@@ -72,6 +72,10 @@ void interactiveMode(char *possiblePaths[], char *envp[], char *argv[])
 		while (printf(" >_ ") && getline(&str, &n, stdin) != -1)
 		{
 			trimLeadingSpaces(str);
+			if (_strcmp(str, "#") == 0)
+			{
+				continue;
+			}
 			leanth = _strlen(str);
 			if (str[leanth - 1] == '\n')
 			{
@@ -79,23 +83,19 @@ void interactiveMode(char *possiblePaths[], char *envp[], char *argv[])
 				leanth--;
 			}
 			if (_strlen(str) < 1)
-			{
-				continue;
-			}
+			{ continue; }
 			else
 			{
 				if (_strcmp(str, "clear") == 0)
-				{
-					_clear(str);
-					continue;
-				}
+				{ _clear(str);
+					continue; }
 				else if (_strcmp(str, "env") == 0)
-				{_clear(str);
+				{ _clear(str);
 					_env(envp);
 					continue;
 				}
 				else
-					executeCommand(str, possiblePaths, counter, argv);
+					executeCommand(str, possiblePaths, counter, argv, envp);
 				counter++;
 			}
 		} free(str);
@@ -121,13 +121,15 @@ void nonInteractiveMode(char *possiblePaths[], char *envp[], char *argv[])
 	while (getline(&line, &len, stdin) != -1)
 	{
 		trimLeadingSpaces(line);
+		if (_strcmp(line, "#") == 0)
+		{
+			continue;
+		}
 		length = _strlen(line);
 
 		if (line[length - 1] == '\n')
-		{
-			line[length - 1] = '\0';
-			length--;
-		}
+		{ line[length - 1] = '\0';
+			length--; }
 		if (_strlen(line) < 1)
 		{
 			continue;
@@ -135,20 +137,15 @@ void nonInteractiveMode(char *possiblePaths[], char *envp[], char *argv[])
 		else
 		{
 			if (_strcmp(line, "clear") == 0)
-			{
-				_clear(line);
-				continue;
-			}
+			{ _clear(line);
+				continue; }
 			else if (_strcmp(line, "env") == 0)
-			{
-				_env(envp);
-				continue;
-			}
+			{ _env(envp);
+				continue; }
 			else
-				executeCommand(line, possiblePaths, counter, argv);
+				executeCommand(line, possiblePaths, counter, argv, envp);
 			counter++;
 		}
 	}
-
 	free(line);
 }

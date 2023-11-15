@@ -33,7 +33,8 @@ typedef struct formatHandler
 } formatHandler;
 
 void concatenate(char *dest, char *src1, char *src2, size_t destSize);
-void executeCommand(char *command, char *paths[], int counter, char *argv[]);
+void executeCommand(char *command, char *paths[],
+int counter, char *argv[], char *envp[]);
 int _strcmp(char *s1, char *s2);
 char *_strncpy(char *dest, char *src, int n);
 int _strlen(char *s);
@@ -51,10 +52,12 @@ void _strncat(char *dest, char *src, size_t n);
 int isInteractive(void);
 void interactiveMode(char *possiblePaths[], char *envp[], char *argv[]);
 void nonInteractiveMode(char *possiblePaths[], char *envp[], char *argv[]);
-void executePath(char *paths[], char **args, char *argv[], int counter);
+void executePath(char *paths[], char **args, char *argv[],
+int counter, char *envp[]);
 int _atoi(char *str);
-void changeDirectory(char *args[]);
-char *_getenv(char *name);
-void freememmory(char *possiblePaths[]);
+void changeDirectory(char *args[], char *argv[], int counter);
+char *_getenv(char *n);
+int _setenv(char *variable, char *value);
+int _unsetenv(char *variable);
 
 #endif

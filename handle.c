@@ -69,8 +69,12 @@ void leave(char *status_str)
 		exit(EXIT_SUCCESS);
 	}
 
-	status = _atoi(status_str);
+	if (_strcmp(status_str, "exit") == 0)
+	{
+		exit(EXIT_SUCCESS);
+	}
 
+	status = _atoi(status_str);
 	exit(status);
 }
 
@@ -85,6 +89,5 @@ void leave(char *status_str)
 void _clear(char *str)
 {
 	(void)str;
-	free(str);
 	write(STDOUT_FILENO, "\033[H\033[J", 6);
 }
