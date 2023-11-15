@@ -1,6 +1,39 @@
 #include "shell.h"
 
 /**
+ * _atoi - to convert strings to integers
+ *
+ * @str: the string to be converted
+ *
+ * Return: the integer
+ */
+
+int _atoi(char *str)
+{
+	unsigned int result = 0;
+	int sign = 1;
+	int i = 0;
+
+	while (str[i] == ' ' || str[i] == '\t')
+	{
+		i++;
+	}
+
+	if (str[i] == '-' || str[i] == '+')
+	{
+		sign = (str[i++] == '-') ? -1 : 1;
+	}
+
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		result = (result * 10) + (str[i] - '0');
+		i++;
+	}
+
+	return (sign * result);
+}
+
+/**
  * _env - to display my environment if needed
  *
  * @envp: a variable holds the environment
@@ -22,15 +55,23 @@ void _env(char *envp[])
 /**
  * leave - to exit my program
  *
- * @str: the input string
+ * @status_str: the status of the exit function
  *
  * Return: no return
  */
 
-void leave(char *str)
+void leave(char *status_str)
 {
-	free(str);
-	exit(EXIT_SUCCESS);
+	int status;
+
+	if (status_str == NULL)
+	{
+		exit(EXIT_SUCCESS);
+	}
+
+	status = _atoi(status_str);
+
+	exit(status);
 }
 
 /**
@@ -44,29 +85,6 @@ void leave(char *str)
 void _clear(char *str)
 {
 	(void)str;
+	free(str);
 	write(STDOUT_FILENO, "\033[H\033[J", 6);
-}
-
-/**
- * handler - to handle the clear and exit function
- *
- * @str: the input string
- *
- * Return: no return
- */
-
-void handler(char *str)
-{
-	formatHandler arr[] = {{"exit", leave}, {"clear", _clear}};
-	int i = 0;
-
-	while (str)
-	{
-		if (_strcmp(str, arr[i].name) == 0)
-		{
-			arr[i].functions(str);
-			break;
-		}
-		i++;
-	}
 }

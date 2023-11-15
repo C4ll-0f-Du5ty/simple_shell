@@ -24,6 +24,11 @@ void getPathTokens(char *paths[], char *envp[])
 		}
 	}
 
+	if (Pathvar == NULL)
+	{
+		exit(EXIT_FAILURE);
+	}
+
 	token = strtok(Pathvar, ":");
 	for (i = 0; token; i++)
 	{
@@ -32,7 +37,6 @@ void getPathTokens(char *paths[], char *envp[])
 	}
 
 	paths[i] = NULL;
-	free(token);
 }
 
 /**
@@ -81,9 +85,9 @@ void interactiveMode(char *possiblePaths[], char *envp[], char *argv[])
 		}
 		else
 		{
-			if (_strcmp(str, "exit") == 0 || _strcmp(str, "clear") == 0)
+			if (_strcmp(str, "clear") == 0)
 			{
-				handler(str);
+				_clear(str);
 				continue;
 			}
 			else if (_strcmp(str, "env") == 0)
@@ -133,9 +137,9 @@ void nonInteractiveMode(char *possiblePaths[], char *envp[], char *argv[])
 		}
 		else
 		{
-			if (_strcmp(line, "exit") == 0 || _strcmp(line, "clear") == 0)
+			if (_strcmp(line, "clear") == 0)
 			{
-				handler(line);
+				_clear(line);
 				continue;
 			}
 			else if (_strcmp(line, "env") == 0)

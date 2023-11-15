@@ -40,9 +40,8 @@ int _str1_len(char *s, char deli);
 void trimLeadingSpaces(char *str);
 void shiftString(char *str, int startIndex);
 void parseArguments(char *input, char *arguments[], int maxArguments);
-void handler(char *str);
 void _clear(char *str);
-void leave(char *str);
+void leave(char *status_str);
 void _env(char *envp[]);
 void getPathTokens(char *paths[], char *envp[]);
 int _strncmp(char *s1, char *s2, int n);
@@ -52,5 +51,7 @@ int isInteractive(void);
 void interactiveMode(char *possiblePaths[], char *envp[], char *argv[]);
 void nonInteractiveMode(char *possiblePaths[], char *envp[], char *argv[]);
 void executePath(char *paths[], char **args, char *argv[], int counter);
+int _atoi(char *str);
+void changeDirectory(char *args[]);
 
 #endif

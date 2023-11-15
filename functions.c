@@ -31,27 +31,41 @@ void concatenate(char *dest, char *src1, char *src2, size_t destSize)
 
 void executeCommand(char *command, char *paths[], int counter, char *argv[])
 {
-	pid_t child = fork();
+
 	size_t length = _strlen(command) + 1;
 	char **args = malloc(sizeof(char *) * length);
 
-	if (child == -1)
-	{
-		perror("fork");
-		free(args);
-		exit(EXIT_FAILURE);
-	}
-
 	parseArguments(command, args, length);
-	if (child == 0)
+	if (_strcmp(args[0], "exit") == 0)
 	{
-		executePath(paths, args, argv, counter);
+		leave(args[1]);
+	}
+	else if (_strcmp(args[0], "cd") == 0)
+	{
+		changeDirectory(args);
 	}
 	else
 	{
-		int status;
+		pid_t child = fork();
 
-		wait(&status);
+		if (child == -1)
+		{
+			perror("fork");
+			free(args);
+			exit(EXIT_FAILURE);
+		}
+
+		if (child == 0)
+		{
+			executePath(paths, args, argv, counter);
+			free(args);
+		}
+		else
+		{
+			int status;
+
+			wait(&status);
+		}
 	}
 	free(args);
 }
@@ -81,10 +95,15 @@ void executePath(char *paths[], char **args, char *argv[], int counter)
 	{
 		for (i = 0; paths[i] != NULL; i++)
 		{
-			concatenate(fullPath, paths[i], args[0], MAX_ARGS);
+			size_t len1 = strlen(paths[i]);
+			size_t len2 = strlen(args[0]);
+
+			if (len1 + len2 + 2 <= MAX_ARGS)
+				concatenate(fullPath, paths[i], args[0], MAX_ARGS);
 			if (access(fullPath, X_OK) != -1)
 			{
 				execve(fullPath, args, NULL);
+
 				break;
 			}
 		}
@@ -119,5 +138,4 @@ void parseArguments(char *input, char *arguments[], int maxArguments)
 		token = strtok(NULL, " ");
 	}
 	arguments[argCount] = NULL;
-	free(token);
 }
