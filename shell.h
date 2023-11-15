@@ -19,7 +19,7 @@
 #define MAX_ARGS 1024
 
 /**
- * struct FormatHandler - Struct for handling format specifiers
+ * struct formatHandler - Struct for handling format specifiers
  * @name: The format specifier
  * @functions: Pointer to the corresponding handler function
  *
@@ -27,8 +27,8 @@
 
 typedef struct formatHandler
 {
-    char *name;
-    void (*functions)(char *);
+	char *name;
+	void (*functions)(char *);
 } formatHandler;
 
 void concatenate(char *dest, char *src1, char *src2, size_t destSize);
